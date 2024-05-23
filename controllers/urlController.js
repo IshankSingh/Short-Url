@@ -10,10 +10,8 @@ async function generateShortUrl (req, res) {
     const analytics = await urlAnalytics.create({
         urlId: url._id
     })
-    return res.json({ message: `url created successfully`,
-        url,
-        analytics
-    })
+    console.log(url)
+    return res.render("home", {id: url.shortUrl, url: url, analytics: analytics})
 }
 
 async function getRedirectUrl (req, res) {
@@ -25,13 +23,32 @@ async function getRedirectUrl (req, res) {
         },
         {
             $push: { visitHistory: { timestamp: Date.now() } }
-        }
+        }           
     )
     console.log(analytics)
+    console.log(url)
     return res.redirect(url.redirectUrl)
+}
+
+async function getUrlAnalytics(req, res) {
+    let urls = await URL.find({})
+    let allUrls = []
+    console.log (`Total urls: ${urls.length}`)
+    urls.forEach(url => {
+        allUrls.push(getUrlHistory(url))
+    })
+    let results = await Promise.all(allUrls)
+    
+    return res.render("home", {urls: results})
+}
+
+async function getUrlHistory(url) {
+    const urlHistory = await urlAnalytics.findOne({urlId: url._id})
+    return {url: url, visitHistory: urlHistory.visitHistory != null ? urlHistory.visitHistory : []}
 }
 
 module.exports = {
     generateShortUrl,
-    getRedirectUrl
+    getRedirectUrl,
+    getUrlAnalytics
 }

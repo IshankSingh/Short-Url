@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Get your short url</h1>
+    <form action="/url" method="post">
+        <input type="text" placeholder="https://example.com" name="redirectUrl">
+        <button type="submit">Generate</button>
+    </form>
+
+    <% if (locals.id) { %>
+        <p>http://localhost:8000/<%= url.shortUrl %></p>
+        <ol>
+            <% Object.keys(url).forEach(key => { %>
+             <li><%= url[key] %></li>
+            <% }) %>
+
+            <li><%= url._id %></li>
+            <li><%= url.shortUrl %></li>
+            <li><%= url.redirectUrl %></li>
+
+        </ol>
+    <% } %>
+
+    <% if (locals.urls) { %>
+
+        <p>Total urls: <%= urls.length %></p>
+        <table>
+            <thead>
+                <th>SI. No</th>
+                <th>Short Url</th>
+                <th>Redirect Url</th>
+                <th>Clicks</th>
+            </thead>
+
+            <tbody>
+                <% urls.forEach(item => { %>
+                    <tr>
+                        <td><%= 1 %></td>
+                        <td>http://localhost:8000/url/<%= item.url.shortUrl %></td>
+                        <td><%= item.url.redirectUrl %></td>
+                        <td><%= item.visitHistory.length %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+     
+    <% } %>
+    
+</body>
+</html>
