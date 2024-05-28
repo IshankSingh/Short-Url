@@ -9,6 +9,11 @@ const urlSchema = new mongoose.Schema({
     redirectUrl: {
         type: String,
         required: true,
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        required: true,
     }
 }, { timestamps: true })
 

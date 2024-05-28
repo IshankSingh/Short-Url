@@ -1,9 +1,14 @@
 const express = require("express")
 const dotenv = require("dotenv").config()
 const path = require("path")
-const urlRoute = require("./routes/urlRoutes")
-const urlStaticRoute = require("./routes/urlStaticRoutes")
+const cookieParser = require('cookie-parser')
 const { connectToMongoDb } = require("./dbconfig")
+
+const staticRoute = require("./routes/staticRoutes")
+const urlRoute = require("./routes/urlRoutes")
+const userRoute = require("./routes/userRoutes")
+
+const { restrictToLoggedInUserOnly, checkAuth } = require("./middleware/userAuth")
 
 const PORT = process.env.PORT || 8000
 
@@ -17,8 +22,11 @@ app.set("views", path.resolve("./views"))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser())
+app.use(express.static("static"))
 
-app.get("/", urlStaticRoute)
-app.use('/url', urlRoute)
+app.use("/", checkAuth, staticRoute)
+app.use("/user", userRoute)
+app.use('/url',restrictToLoggedInUserOnly, urlRoute)
 
 app.listen(PORT, () => { console.log (`Server started at Port: ${PORT}`)})

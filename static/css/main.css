@@ -1,0 +1,18 @@
+table {
+    width: 100%;
+}
+td, th {
+    border-bottom: 1px solid #DDD;
+}
+
+/* table {
+    border-collapse: collapse;
+} */
+
+th {
+    text-align: left;
+}
+
+tr:hover {
+    background-color: coral;
+}
